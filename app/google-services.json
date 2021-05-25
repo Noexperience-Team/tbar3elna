@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "106758031204",
+    "firebase_url": "https://tbar3elna-app-default-rtdb.firebaseio.com",
+    "project_id": "tbar3elna-app",
+    "storage_bucket": "tbar3elna-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106758031204:android:225b7a59b7805e458f1c71",
+        "android_client_info": {
+          "package_name": "com.example.tbar3elna_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106758031204-e9r2v1mqjra727ik51tjinvv7fsu3rus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKCND_zzLoz9VVuzrkc8ayrilnVRh3VIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106758031204-e9r2v1mqjra727ik51tjinvv7fsu3rus.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
