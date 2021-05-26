@@ -47,7 +47,7 @@ public class FcmNotificationsSender  {
             JSONObject notiObject = new JSONObject();
             notiObject.put("title", title);
             notiObject.put("body", body);
-            
+            notiObject.put("image-url","https://cache.marieclaire.fr/data/photo/w1000_ci/5g/don-de-sang.jpg");
             notiObject.put("icon", "nos_logo"); // enter icon that exists in drawable only
 
 

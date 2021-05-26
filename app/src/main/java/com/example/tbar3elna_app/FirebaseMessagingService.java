@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,6 +29,8 @@ import android.media.session.MediaSession;
 
 import com.google.firebase.messaging.RemoteMessage;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     NotificationManager mNotificationManager;
@@ -36,6 +40,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        Context context=getApplicationContext();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String packageName = context.getPackageName();
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+                Intent intent = new Intent();
+                intent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse("package:" + packageName));
+                context.startActivity(intent);
 
 
 // playing audio and vibration when user se reques
@@ -53,13 +67,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
         int resourceImage = getResources().getIdentifier(remoteMessage.getNotification().getIcon(), "drawable", getPackageName());
-        int resource2= 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            resource2 = getResources().getIdentifier("don-desang","drawable",getOpPackageName());
-        }
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "CHANNEL_ID");
+/*important*/
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"CHANNEL_ID");
+        /*important*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            builder.setSmallIcon(R.drawable.icontrans);
             builder.setSmallIcon(resourceImage);
@@ -70,45 +82,55 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
 
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
+                Intent resultIntent = new Intent(this, FirebaseMessagingService.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+/**********/
+builder.setSound(notification);
         builder.setContentTitle(remoteMessage.getNotification().getTitle());
         builder.setContentText(remoteMessage.getNotification().getBody());
+        /****taffih*/
         builder.setContentIntent(pendingIntent);
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getNotification().getBody()));
         builder.setAutoCancel(true);
         builder.setPriority(Notification.PRIORITY_MAX);
-        Bitmap icon =BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.nos_logo);
-        builder.setLargeIcon(icon);
+        Bitmap icon =BitmapFactory.decodeResource(getApplicationContext().getResources(), resourceImage);
 
-        builder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(icon).bigLargeIcon(null));
-
+                builder.setStyle(
+                        new NotificationCompat.BigPictureStyle()
+                                .bigPicture(icon)
+                                .bigLargeIcon(null)
+                ).setLargeIcon(icon);
+/*taffih*/
         mNotificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 
 
-
+/*************************/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            String channelId = "Your_channel_id";
+            String channelId = "tbar3elna-app";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
                     "Channel human readable title",
                     NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{100, 200, 300});
             mNotificationManager.createNotificationChannel(channel);
             builder.setChannelId(channelId);
         }
-
+builder.setPriority(Notification.PRIORITY_MAX);
 
 
 // notificationId is a unique int for each notification that you must define
-        mNotificationManager.notify(100, builder.build());
 
-
+        mNotificationManager.notify(1000, builder.build());
     }
 
 }
 
+    }
+}

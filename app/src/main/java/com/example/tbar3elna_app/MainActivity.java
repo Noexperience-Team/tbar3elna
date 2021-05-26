@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -63,6 +66,15 @@ private static  final String CHANNEL_ID="101";
                 finish();
                 Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
                 return true;
+            case  R.id.item3:
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String name = user.getDisplayName();
+                FirebaseDatabase db;
+                db = FirebaseDatabase.getInstance();
+                DatabaseReference reference;
+                db.getReference().child("Users").child(name).child("need").setValue("false");
+                return  true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -71,7 +83,17 @@ private static  final String CHANNEL_ID="101";
     public void logout (View view){
        FcmNotificationsSender notificationsSender=new FcmNotificationsSender("/topics/all","محتاجينك","محتاجينك بش تتبرعلنا و تنجم تنقذ روح إنسان",getApplicationContext(),MainActivity.this);
         notificationsSender.SendNotifications();
+        Change();
     }
 
+public void Change(){
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String name = user.getDisplayName();
+    FirebaseDatabase db;
+    db = FirebaseDatabase.getInstance();
+    DatabaseReference reference;
+     db.getReference().child("Users").child(name).child("need").setValue("true");
+    Toast.makeText(this,name,Toast.LENGTH_SHORT).show();
 
+}
 }

@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +20,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -65,7 +69,8 @@ public class Register extends AppCompatActivity {
                 String local = Localisation.getText().toString();
 
                 db = FirebaseDatabase.getInstance();
-                reference = db.getReference().child("Users");
+
+                reference = db.getReference().child("Users").child(name);
 
                 UserHelperClass helperClass = new UserHelperClass(name, email, password, groupe, local);
 
@@ -75,8 +80,9 @@ public class Register extends AppCompatActivity {
                 userMap.put("Password" , password);
                 userMap.put("Groupe_sanguin" , groupe);
                 userMap.put("Localisation" , local);
+                userMap.put("need","false");
 
-                reference.push().setValue(userMap);
+                reference.setValue(userMap);
 
                 if(TextUtils.isEmpty(email)){
                     Email.setError("ادخل حسابك");
@@ -98,6 +104,24 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name)
+
+                                    .build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+
+                                            }
+                                        }
+                                    });
+
+
                             Toast.makeText(Register.this, "تم إنشاء المستخدم بنجاح", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
