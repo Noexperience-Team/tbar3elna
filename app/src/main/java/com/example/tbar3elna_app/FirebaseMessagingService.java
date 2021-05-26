@@ -40,16 +40,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Context context=getApplicationContext();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String packageName = context.getPackageName();
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                Intent intent = new Intent();
-                intent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse("package:" + packageName));
-                context.startActivity(intent);
+
 
 
 // playing audio and vibration when user se reques
@@ -130,7 +121,5 @@ builder.setPriority(Notification.PRIORITY_MAX);
         mNotificationManager.notify(1000, builder.build());
     }
 
-}
 
-    }
 }

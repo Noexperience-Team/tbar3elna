@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,12 +28,16 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     private Button ajoutbtn;
+    TextView name;
 private static  final String CHANNEL_ID="101";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String namee = user.getDisplayName();
+        name=(TextView) findViewById(R.id.Namee);
+        name.setText(namee);
         FirebaseMessaging.getInstance().subscribeToTopic("all");
         ajoutbtn = findViewById(R.id.ajouter);
 
